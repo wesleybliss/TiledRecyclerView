@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         items.add( new CategoryTile( CategoryTile.TYPE_TOP, sampleImage1, sampleImage2, sampleImage3 ) );
         items.add( new CategoryTile( CategoryTile.TYPE_LEFT, sampleImage1, sampleImage2, sampleImage3 ) );
 
-        TiledRecyclerViewAdapter tiledRecyclerViewAdapter = new TiledRecyclerViewAdapter( this, items );
+        TiledRecyclerViewAdapter tiledRecyclerViewAdapter = new TiledRecyclerViewAdapter( Picasso.with(this), items );
         listThings = (RecyclerView) findViewById( R.id.listThings );
         setupRecyclerViewLayout( listThings );
         listThings.setAdapter( tiledRecyclerViewAdapter );

@@ -43,7 +43,7 @@ public class TiledRecyclerViewAdapter extends RecyclerView.Adapter<TiledRecycler
      */
     public TiledRecyclerViewAdapter( final Picasso picasso, final List<CategoryTile> items ) {
         this.items = new ArrayList<>( items );
-        this.picassoRef = new WeakReference<Picasso>( picasso );
+        this.picassoRef = new WeakReference<>( picasso );
     }
 
     /**
@@ -85,14 +85,20 @@ public class TiledRecyclerViewAdapter extends RecyclerView.Adapter<TiledRecycler
     @Override
     public TiledRecyclerViewAdapter.ViewHolder onCreateViewHolder( final ViewGroup viewGroup, final int position ) {
 
-        final CategoryTile selectedItem = items.get( position );
+        final CategoryTile item = items.get( position );
 
         final View view = LayoutInflater.from( viewGroup.getContext() )
-            .inflate( tilesViewMap.get( selectedItem.type ), viewGroup, false );
+            .inflate( tilesViewMap.get( item.type ), viewGroup, false );
 
         final ViewHolder viewHolder = new ViewHolder( view );
 
         viewHolder.itemView.setClickable( false );
+
+        if ( picassoRef.get() != null ) {
+            picassoRef.get().load( item.imageUrl1 ).into( viewHolder.image1 );
+            picassoRef.get().load( item.imageUrl2 ).into( viewHolder.image2 );
+            picassoRef.get().load( item.imageUrl3 ).into( viewHolder.image3 );
+        }
 
         return viewHolder;
 
@@ -108,34 +114,8 @@ public class TiledRecyclerViewAdapter extends RecyclerView.Adapter<TiledRecycler
     @Override
     public void onBindViewHolder( TiledRecyclerViewAdapter.ViewHolder viewHolder, int i ) {
 
-        final CategoryTile item = items.get( i );
 
-        // Set the data for the views
-        if ( picassoRef.get() != null ) {
-            picassoRef.get().load( item.imageUrl1 ).into( viewHolder.image1 );
-            picassoRef.get().load( item.imageUrl2 ).into( viewHolder.image2 );
-            picassoRef.get().load( item.imageUrl3 ).into( viewHolder.image3 );
-        }
 
-        if ( selectedPosition == i ) {
-            if ( selectedView != null ) {
-                selectedView.setSelected( false );
-            }
-            selectedPosition = i;
-            selectedView = viewHolder.itemView;
-            selectedView.setSelected( true );
-        }
-
-    }
-
-    /**
-     * Handles setting the selected position & notifying the list layout
-     *
-     * @param position    The newly selected list index
-     */
-    public void selectPosition( int position ) {
-        selectedPosition = position;
-        notifyItemChanged( position );
     }
 
     /**
