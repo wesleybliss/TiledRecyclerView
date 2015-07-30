@@ -94,12 +94,6 @@ public class TiledRecyclerViewAdapter extends RecyclerView.Adapter<TiledRecycler
 
         viewHolder.itemView.setClickable( false );
 
-        if ( picassoRef.get() != null ) {
-            picassoRef.get().load( item.imageUrl1 ).into( viewHolder.image1 );
-            picassoRef.get().load( item.imageUrl2 ).into( viewHolder.image2 );
-            picassoRef.get().load( item.imageUrl3 ).into( viewHolder.image3 );
-        }
-
         return viewHolder;
 
     }
@@ -109,12 +103,18 @@ public class TiledRecyclerViewAdapter extends RecyclerView.Adapter<TiledRecycler
      * This gets called many times as the list items come into/out of view.
      *
      * @param viewHolder    A {@link TiledRecyclerViewAdapter.ViewHolder} instance
-     * @param i             Index of list item being rendered
+     * @param position      Index of list item being rendered
      */
     @Override
-    public void onBindViewHolder( TiledRecyclerViewAdapter.ViewHolder viewHolder, int i ) {
+    public void onBindViewHolder( final TiledRecyclerViewAdapter.ViewHolder viewHolder, final int position ) {
 
+        final CategoryTile item = items.get( position );
 
+        if ( picassoRef.get() != null ) {
+            picassoRef.get().load( item.imageUrl1 ).noPlaceholder().noFade().fit().into( viewHolder.image1 );
+            picassoRef.get().load( item.imageUrl2 ).noPlaceholder().noFade().fit().into( viewHolder.image2 );
+            picassoRef.get().load( item.imageUrl3 ).noPlaceholder().noFade().fit().into( viewHolder.image3 );
+        }
 
     }
 
