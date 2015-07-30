@@ -157,6 +157,7 @@ public class TiledRecyclerViewAdapter extends RecyclerView.Adapter<TiledRecycler
             image1.setOnClickListener( new View.OnClickListener() {
                 @Override
                 public void onClick( View v ) {
+                    // @todo trigger callbacks
                     Log.d( "wes", "image1 was clicked" );
                 }
             });
