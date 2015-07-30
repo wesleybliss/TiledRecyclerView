@@ -1,6 +1,5 @@
 package tiledrecyclerview.gammagamma.com.tiledrecyclerview;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +9,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,8 +25,9 @@ public class TiledRecyclerViewAdapter extends RecyclerView.Adapter<TiledRecycler
     protected int selectedPosition;  // Current selected position
     protected TiledRecyclerViewCallbacks tiledRecyclerViewCallbacks;
 
-    protected Picasso picasso;
+    protected WeakReference<Picasso> picassoRef;
 
+    // Map of possible tile types and their corresponding layouts
     protected static HashMap<Integer, Integer> tilesViewMap;
     static {
         tilesViewMap = new HashMap<>();
@@ -37,11 +38,12 @@ public class TiledRecyclerViewAdapter extends RecyclerView.Adapter<TiledRecycler
     /**
      * An adapter to handle grouped items in a {@link RecyclerView}.
      *
+     * @param picasso         A Picasso instance for image loading (becomes a {@link WeakReference<Picasso>})
      * @param items           A list of {@link CategoryTile}s
      */
-    public TiledRecyclerViewAdapter( final Context context, final List<CategoryTile> items ) {
+    public TiledRecyclerViewAdapter( final Picasso picasso, final List<CategoryTile> items ) {
         this.items = new ArrayList<>( items );
-        this.picasso = Picasso.with( context );
+        this.picassoRef = new WeakReference<Picasso>( picasso );
     }
 
     /**
@@ -109,9 +111,11 @@ public class TiledRecyclerViewAdapter extends RecyclerView.Adapter<TiledRecycler
         final CategoryTile item = items.get( i );
 
         // Set the data for the views
-        picasso.load( item.imageUrl1 ).into( viewHolder.image1 );
-        picasso.load( item.imageUrl2 ).into( viewHolder.image2 );
-        picasso.load( item.imageUrl3 ).into( viewHolder.image3 );
+        if ( picassoRef.get() != null ) {
+            picassoRef.get().load( item.imageUrl1 ).into( viewHolder.image1 );
+            picassoRef.get().load( item.imageUrl2 ).into( viewHolder.image2 );
+            picassoRef.get().load( item.imageUrl3 ).into( viewHolder.image3 );
+        }
 
         if ( selectedPosition == i ) {
             if ( selectedView != null ) {
@@ -158,7 +162,7 @@ public class TiledRecyclerViewAdapter extends RecyclerView.Adapter<TiledRecycler
                 @Override
                 public void onClick( View v ) {
                     // @todo trigger callbacks
-                    Log.d( "wes", "image1 was clicked" );
+                    Log.d( TAG, "image1 was clicked" );
                 }
             });
         }
